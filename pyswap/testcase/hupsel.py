@@ -2,19 +2,18 @@ from datetime import date as dt
 from pandas import DataFrame
 from pyswap.core.metadata import Metadata
 from pyswap.core.simsettings import SimSettings
-from pyswap.atmosphere import Meteorology, weather_knmi, PenmanMonteith
+from pyswap.atmosphere import Meteorology, load_from_knmi, PenmanMonteith
 from pyswap.plant.createcrop import (Preparation, OxygenStress, DroughtStress,
                                      Interception, CropDevelopmentSettingsFixed, CropDevelopmentSettingsWOFOST)
 from pyswap.plant import CropFile, Crop
 from pyswap.irrigation import Irrigation, FixedIrrigation
 from pyswap.soilwater import (
     SoilMoisture, SurfaceFlow, Evaporation, SoilProfile)
-from pyswap.drainage import LateralDrainage, DraFile
+from pyswap.drainage import LateralDrainage
 from pyswap.core.boundary import BottomBoundary
 from pyswap.core.model import Model
 from pathlib import Path
-from pyswap.drainage.createdra.drafile import DraSettings, DrainageFormula
-
+from pyswap.drainage.createdra.drafile import DraSettings, DrainageFormula, DraFile
 
 def _run_hupsel():
     # %% Basic settings of the model
@@ -50,7 +49,7 @@ def _run_hupsel():
     )
 
     # Obtain the meteorological data from KNMI
-    meteo_data = weather_knmi(stations='283')
+    meteo_data = load_from_knmi(stations='283')
 
     meteo = Meteorology(
         metfil='283.met',
