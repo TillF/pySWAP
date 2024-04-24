@@ -68,8 +68,9 @@ class Model(PySWAPBaseModel):
         print('Copying linux executable into temporary directory...')
 
     @staticmethod
-    def _run_exe(tempdir: Path) -> str:
-        swap_path = Path(tempdir, 'swap.exe') if is_windows() else './swap420'
+    def _run_exe(tempdir: Path, swap_path=None) -> str:
+        if swap_path is None:
+            swap_path = Path(tempdir, 'swap.exe') if is_windows() else './swap420'
 
         p = subprocess.Popen(swap_path,
                              stdout=subprocess.PIPE,
@@ -114,7 +115,9 @@ class Model(PySWAPBaseModel):
             if self.irrigation.fixedirrig.irrigationdata:
                 self.irrigation.fixedirrig.write_irg(path)
 
-    def run(self, path: str | Path):
+    
+    #def run(self, path: str | Path, swap_path=None: str | Path):
+    def run(self, path: str | Path, swap_path=None):
         """Main function that runs the model.
 
         TODO: implement asynchronous function that would run the swap exe and then check once in a few seconds if the swap.log is there.
@@ -123,15 +126,15 @@ class Model(PySWAPBaseModel):
         is an error in the model run.
         """
         with tempfile.TemporaryDirectory(dir=path) as tempdir:
-
-            if is_windows():
-                self._copy_swap_exe(tempdir)
-            else:
-                self._copy_swap(tempdir)
+            print(tempdir)
+            if swap_path is None: #no executable sepcified: copy executable from Python package 
+                if is_windows():
+                    self._copy_swap_exe(tempdir)
+                else:
+                    self._copy_swap(tempdir)
 
             self._write_inputs(tempdir)
-
-            result = self._run_exe(tempdir)
+            result = self._run_exe(tempdir, swap_path)
 
             if 'normal completion' not in result:
                 raise Exception(
