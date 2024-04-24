@@ -17,7 +17,7 @@ pySWAP is in the early stages of development so any contributions are highly enc
 
 ## Help
 
-Consult pySWAP [documentation](https://docs.pydantic.dev/) page for detailed instructions.
+Consult pySWAP [documentation](https://zawadzkim.github.io/pySWAP/) page for detailed instructions.
 
 ## Installation
 
